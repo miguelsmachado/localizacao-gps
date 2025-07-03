@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Localização</title>
+</head>
+<body>
+  <h2>Compartilhe sua localização</h2>
+  <p id="saida">Solicitando...</p>
+
+  <script>
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lon = pos.coords.longitude;
+          document.getElementById("saida").innerHTML = 
+            `Latitude: ${lat}<br>Longitude: ${lon}`;
+        },
+        function(error) {
+          document.getElementById("saida").innerText = 
+            "Permissão negada ou erro ao obter localização.";
+        }
+      );
+    } else {
+      document.getElementById("saida").innerText = 
+        "Geolocalização não é suportada neste navegador.";
+    }
+  </script>
+</body>
+</html>
