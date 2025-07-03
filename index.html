@@ -1,30 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Localização</title>
-</head>
-<body>
-  <h2>Compartilhe sua localização</h2>
-  <p id="saida">Solicitando...</p>
-
+  <title>Envio de Localização por E-mail</title>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(pos) {
+    (function(){
+      emailjs.init("SEU_USER_ID"); // substitua pelo seu user ID do EmailJS
+    })();
+
+    function enviarLocalizacao() {
+      document.getElementById("saida").innerText = "Obtendo localização...";
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
           const lat = pos.coords.latitude;
           const lon = pos.coords.longitude;
-          document.getElementById("saida").innerHTML = 
-            `Latitude: ${lat}<br>Longitude: ${lon}`;
-        },
-        function(error) {
-          document.getElementById("saida").innerText = 
-            "Permissão negada ou erro ao obter localização.";
-        }
-      );
-    } else {
-      document.getElementById("saida").innerText = 
-        "Geolocalização não é suportada neste navegador.";
+
+          const templateParams = {
+            latitude: lat,
+            longitude: lon,
+            email: "miguelsmachado@gmail.com"
+          };
+
+          emailjs.send("SEU_SERVICE_ID", "SEU_TEMPLATE_ID", templateParams)
+            .then(function(response) {
+              document.getElementById("saida").innerText = "Localização enviada com sucesso!";
+            }, function(error) {
+              document.getElementById("saida").innerText = "Erro ao enviar e-mail.";
+            });
+
+        }, function() {
+          document.getElementById("saida").innerText = "Permissão negada.";
+        });
+      } else {
+        document.getElementById("saida").innerText = "Geolocalização não suportada.";
+      }
     }
   </script>
+</head>
+<body>
+  <h2>Envie sua localização</h2>
+  <button onclick="enviarLocalizacao()">Enviar Localização</button>
+  <p id="saida"></p>
 </body>
 </html>
